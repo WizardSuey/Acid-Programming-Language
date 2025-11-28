@@ -1,0 +1,39 @@
+program     ->  { declaration } EOF .
+
+
+
+declaration -> statement
+             | varDecl
+             | funDecl .
+
+varDecl     -> [ "mut" ] "var" IDENTIFIER [ ( "=" expression ) ] ";"
+funDecl     -> "function" function "end".
+
+
+
+statement   -> exprStmt
+             | forStmt
+             | ifStmt
+             | returnStmt
+             | whileStmt
+             | blockStmt
+             | stdoutStmt .
+
+exprStmt    -> expression ";" .
+forStmt     -> "for" "(" ( varDecl | exprStmt | ";" ) 
+                         [ expression ] ";" 
+                         expression ")" statement "end" .
+ifStmt      -> "if" "(" expression ")" statement 
+                [ ( "else" statement ) ] "end" .
+returnStmt  -> "return" [ expression ] ";" .
+whileStmt   -> "while" "(" expression ")" statement "end" .
+blockStmt   -> "block" declaration "end" .
+stdoutStmt  -> "stdout" "<<" expression ";" .
+
+
+
+expression  -> assignment .
+
+assignment  -> [ ( call "." ) ] IDENTIFIER "=" assignment | logic_or .
+
+logic_or    -> logic_and 

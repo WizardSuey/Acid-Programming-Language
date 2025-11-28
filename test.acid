@@ -1,0 +1,8 @@
+var a = 10;
+mut var b = 20;
+
+stdout << a + b;
+
+function main(a, b)
+    stdout << "Hello, world!";
+end
