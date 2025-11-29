@@ -2,7 +2,7 @@ BUILD_DIR = bin
 SOURCE_DIR = src
 WIN_BIN = $(BUILD_DIR)/acid.exe
 LINUX_BIN = $(BUILD_DIR)/acid
-SOURCES = $(SOURCE_DIR)/main.c $(SOURCE_DIR)/lexer.c $(SOURCE_DIR)/debug.c
+SOURCES = $(SOURCE_DIR)/main.c $(SOURCE_DIR)/lexer.c $(SOURCE_DIR)/debug.c $(SOURCE_DIR)/ast.c
 
 CC = gcc
 

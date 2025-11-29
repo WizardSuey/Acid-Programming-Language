@@ -1,12 +1,12 @@
 #ifndef ACID_AST_H
 #define ACID_AST_H
 
-typedef enum AstUnaryOp {
+typedef enum {
     AST_UNARY_OP_MINUS,    /* -x */
     AST_UNARY_OP_NOT       /* !x */
 } AstUnaryOp;
 
-typedef enum AstBinaryOp {
+typedef enum {
     AST_BINARY_OP_MUL,
     AST_BINARY_OP_DIV,
     AST_BINARY_OP_ADD,
@@ -29,7 +29,7 @@ typedef enum AstBinaryOp {
 } AstBinaryOp;
 
 //* Типы узлов AST
-typedef enum AstKind {
+typedef enum {
     AST_GLOBAL_VAR      = 143,
     AST_LOCAL_VAR       = 144,
     AST_FUNC_DECL       = 145,
@@ -41,11 +41,20 @@ typedef enum AstKind {
     AST_RETURN          = 151,
     AST_FOR             = 152,
     AST_BLOCK           = 153,
-
 } AstKind;
 
-typedef struct Ast {
+typedef struct {
+    AstKind kind;
+    union {
+        /* Basic value */
+        struct {
+            double value;
+        };
+        /* String */
+        struct {
 
+        };
+    };
 } Ast;
 
 #endif
