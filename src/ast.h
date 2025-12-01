@@ -1,6 +1,9 @@
 #ifndef ACID_AST_H
 #define ACID_AST_H
 
+#include "dstr.h"
+#include "common.h"
+
 typedef enum {
     AST_UNARY_OP_MINUS,    /* -x */
     AST_UNARY_OP_NOT       /* !x */
@@ -52,8 +55,10 @@ typedef struct {
         };
         /* String */
         struct {
-
+            dStr *value;
+            int64_t length;
         };
+        
     };
 } Ast;
 
