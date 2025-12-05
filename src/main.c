@@ -5,6 +5,9 @@
 #include "common.h"
 #include "lexer.h"
 #include "debug.h"
+#include "compiler.h"
+#include "ast.h"
+#include "memory.h"
 
 #define FILE_EXTENSION ".acid"
 
@@ -44,25 +47,24 @@ static void runFile(const char* path) {
     }
 
     char* source = readFile(path);
-    initLexer(source);
-    Token token = scanToken();
-    #ifdef DEBUG_PRINT_TOKENS
-    while (token.type != TOKEN_EOF) {
-        printToken(token);
-        token = scanToken();
+    if (!compile(source)) {
+        printf("Compilation failed.\n");
+        free(source);
+        exit(65);
     }
-    #endif
-
-    
-    free(source);
 }
 
 int main(int argc, const char* argv[]) {
     if (argc == 2) {
         runFile(argv[1]);
     } else {
-        fprintf(stderr, "Usage: acid [path]\n");
-        exit(64);
+        // fprintf(stderr, "Usage: acid [path]\n");
+        // exit(64);
+        Ast* ast = NEW_AST(AST_BINARY_OP, AST_BIN_ADD, NEW_AST(AST_BASIC_VALUE, 1.0), NEW_AST(AST_BASIC_VALUE, 2.0));
+        #ifdef DEBUG_PRINT_AST
+            printAst(ast);
+        #endif
+        FREE(Ast, ast);
     }
     
     return 0;

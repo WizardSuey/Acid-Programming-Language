@@ -4,11 +4,13 @@
 /* Динамические строки */
 
 #include <stddef.h>
+#include <stdio.h>
+#include "common.h"
 
-typedef struct {
+typedef struct  dStr{
     char* data;
     size_t length;
     size_t capacity;
-} dStr;
+} __attribute__((packed)) dStr;
 
 #endif

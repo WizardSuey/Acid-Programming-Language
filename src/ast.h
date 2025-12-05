@@ -1,65 +1,91 @@
 #ifndef ACID_AST_H
 #define ACID_AST_H
 
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdio.h>
+
 #include "dstr.h"
 #include "common.h"
 
-typedef enum {
+
+typedef enum AstUnaryOp {
     AST_UNARY_OP_MINUS,    /* -x */
     AST_UNARY_OP_NOT       /* !x */
 } AstUnaryOp;
 
-typedef enum {
-    AST_BINARY_OP_MUL,
-    AST_BINARY_OP_DIV,
-    AST_BINARY_OP_ADD,
+typedef enum AstBinaryOp {
+    AST_BIN_MUL,
+    AST_BIN_DIV,
+    AST_BIN_ADD,
+    AST_BIN_SUB,
 
-    AST_BINARY_OP_ADD,
-    AST_BINARY_OP_SUB,
+    AST_BIN_LESS,
+    AST_BIN_LESS_EQUAL,
+    AST_BIN_GREATER,
+    AST_BIN_GREATER_EQUAL,
 
-    AST_BINARY_OP_LESS,
-    AST_BINARY_OP_LESS_EQUAL,
-    AST_BINARY_OP_GREATER,
-    AST_BINARY_OP_GREATER_EQUAL,
+    AST_BIN_EQUAL,
+    AST_BIN_NOT_EQUAL,
 
-    AST_BINARY_OP_EQUAL,
-    AST_BINARY_OP_NOT_EQUAL,
+    AST_BIN_AND,           /* x and y */
+    AST_BIN_OR,            /* x or y */
+    AST_BIN_APPEND,        /* x << y */
 
-    AST_BINARY_OP_AND,          /* x and y */
-    AST_BINARY_OP_OR ,          /* x or y */
-
-    AST_BINARY_OP_ASSIGNMENT    /* x = y */
+    AST_BIN_ASSIGN         /* x = y */
 } AstBinaryOp;
 
-//* Типы узлов AST
-typedef enum {
-    AST_GLOBAL_VAR      = 143,
-    AST_LOCAL_VAR       = 144,
-    AST_FUNC_DECL       = 145,
-    AST_DECL            = 146,
-    AST_STRING          = 147,
-    AST_FUNCALL         = 148,
-    AST_IF              = 149,
-    AST_WHILE           = 150,
-    AST_RETURN          = 151,
-    AST_FOR             = 152,
-    AST_BLOCK           = 153,
+typedef enum AstKind {
+    AST_GLOBAL_VAR,
+    AST_LOCAL_VAR,
+    AST_FUNC_DECL,
+    AST_DECL,
+    AST_BASIC_VALUE,
+    AST_STRING,
+    AST_FUNCALL,
+    AST_IF,
+    AST_WHILE,
+    AST_RETURN,
+    AST_FOR,
+    AST_BLOCK,
+    AST_BINARY_OP,
+    AST_UNARY_OP
 } AstKind;
 
-typedef struct {
+typedef struct Ast Ast;
+typedef struct Ast{
     AstKind kind;
     union {
-        /* Basic value */
-        struct {
+        struct AST_BASIC_VALUE {               /* Basic value (number) */
             double value;
-        };
-        /* String */
-        struct {
+        } AST_BASIC_VALUE;
+
+        struct {               /* String */
             dStr *value;
-            int64_t length;
-        };
-        
-    };
+            size_t length;
+        } AST_STRING;
+
+        struct AST_BINARY_OP {               /* Binary operation */
+            AstBinaryOp op;
+            Ast* left;
+            Ast* right;
+        } AST_BINARY_OP;
+
+        struct AST_UNARY_OP {               /* Unary operation */
+            AstUnaryOp op;
+            Ast* expr;
+        } AST_UNARY_OP;
+    } data;
 } Ast;
+
+Ast* newAst(Ast ast);
+
+Ast* astBasicValueNew(double value);
+Ast* astStringNew(const char* value, size_t length);
+Ast* astBinaryOpNew(AstBinaryOp op, Ast* left, Ast* right);
+Ast* astUnaryOpNew(AstUnaryOp op, Ast* expr);
+
+#define NEW_AST(kind, ...) \
+    newAst((Ast){kind, {.kind=(struct kind){__VA_ARGS__}}})
 
 #endif

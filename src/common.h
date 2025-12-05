@@ -7,5 +7,6 @@
 #include <stddef.h>
 
 #define DEBUG_PRINT_TOKENS
+#define DEBUG_PRINT_AST
 
 #endif
