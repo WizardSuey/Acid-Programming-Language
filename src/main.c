@@ -5,12 +5,29 @@
 #include "common.h"
 #include "lexer.h"
 #include "debug.h"
-#include "compiler.h"
+#include "interpreter.h"
 #include "ast.h"
 #include "memory.h"
 
 #define FILE_EXTENSION ".acid"
 
+
+static void repl() {
+  char line[1024];
+  for (;;) {
+    printf("> ");
+
+    if (!fgets(line, sizeof(line), stdin)) {
+      printf("\n");
+      break;
+    }
+
+    if (!interpret(line)) {
+        printf("Compilation failed.\n");
+        exit(65);
+    }
+  }
+}
 
 static char* readFile(const char* path) {
     FILE* file = fopen(path, "rb");
@@ -47,24 +64,28 @@ static void runFile(const char* path) {
     }
 
     char* source = readFile(path);
-    if (!compile(source)) {
+    if (!interpret(source)) {
         printf("Compilation failed.\n");
         free(source);
         exit(65);
     }
+    printf("Compilation succeeded.\n");
+    free(source);
 }
 
 int main(int argc, const char* argv[]) {
-    if (argc == 2) {
+    if (argc == 1) {
+        repl();
+    } else if (argc == 2) {
         runFile(argv[1]);
     } else {
-        // fprintf(stderr, "Usage: acid [path]\n");
-        // exit(64);
-        Ast* ast = NEW_AST(AST_BINARY_OP, AST_BIN_ADD, NEW_AST(AST_BASIC_VALUE, 1.0), NEW_AST(AST_BASIC_VALUE, 2.0));
-        #ifdef DEBUG_PRINT_AST
-            printAst(ast);
-        #endif
-        FREE(Ast, ast);
+        fprintf(stderr, "Usage: acid [path]\n");
+        exit(64);
+        // Ast* ast = NEW_AST(AST_BINARY_OP, AST_BIN_ADD, NEW_AST(AST_BASIC_VALUE, 1.0), NEW_AST(AST_BASIC_VALUE, 2.0));
+        // #ifdef DEBUG_PRINT_AST
+        //     printAst(ast);
+        // #endif
+        // FREE(Ast, ast);
     }
     
     return 0;

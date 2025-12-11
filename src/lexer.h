@@ -25,6 +25,8 @@ typedef enum {
     TOKEN_LESS, 
     TOKEN_LESS_LESS,
     TOKEN_LESS_EQUAL,
+    // TOKE_PLUS_PLUS,
+    // TOKEN_MINUS_MINUS,
     /* Литералы */
     TOKEN_IDENTIFIER, 
     TOKEN_STRING, 

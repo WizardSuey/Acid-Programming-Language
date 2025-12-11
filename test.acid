@@ -4,5 +4,7 @@ mut var b = 20;
 stdout << a + b;
 
 function main(a, b)
-    stdout << "Hello, world!";
+    stdout << a + b;
 end
+
+main("hello, ", "world!");

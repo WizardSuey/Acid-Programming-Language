@@ -7,7 +7,7 @@
 
 #include "dstr.h"
 #include "common.h"
-
+#include "lexer.h"
 
 typedef enum AstUnaryOp {
     AST_UNARY_OP_MINUS,    /* -x */
@@ -56,22 +56,22 @@ typedef struct Ast Ast;
 typedef struct Ast{
     AstKind kind;
     union {
-        struct AST_BASIC_VALUE {               /* Basic value (number) */
+        struct AST_BASIC_VALUE {             /* Простое значение (число) */
             double value;
         } AST_BASIC_VALUE;
 
-        struct {               /* String */
+        struct {                             /* Строки */
             dStr *value;
             size_t length;
         } AST_STRING;
 
-        struct AST_BINARY_OP {               /* Binary operation */
+        struct AST_BINARY_OP {               /* Бинарная операция */
             AstBinaryOp op;
             Ast* left;
             Ast* right;
         } AST_BINARY_OP;
 
-        struct AST_UNARY_OP {               /* Unary operation */
+        struct AST_UNARY_OP {               /* Унарная операция */
             AstUnaryOp op;
             Ast* expr;
         } AST_UNARY_OP;
@@ -84,6 +84,10 @@ Ast* astBasicValueNew(double value);
 Ast* astStringNew(const char* value, size_t length);
 Ast* astBinaryOpNew(AstBinaryOp op, Ast* left, Ast* right);
 Ast* astUnaryOpNew(AstUnaryOp op, Ast* expr);
+int astBinaryOpFromToken(TokenType type, AstBinaryOp* result);
+void freeAst(Ast* ast);
+
+#define IS_AST_BASIC_VALUE(ptr) ((ptr) != NULL && (ptr)->kind == AST_BASIC_VALUE)
 
 #define NEW_AST(kind, ...) \
     newAst((Ast){kind, {.kind=(struct kind){__VA_ARGS__}}})
